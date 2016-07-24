@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>phina x pixi</title>
+</head>
+
+<body>
+
+<script src='http://cdn.rawgit.com/phi-jp/phina.js/v0.2.0/build/phina.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.11/pixi.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+'use strict';
+
+var SCREEN_WIDTH = 512;
+var SCREEN_HEIGHT = 512;
+var FPS = 60;
+var ASSETS = {
+  image: {
+    'fox': '../fox64x64.png'
+  }
+};
+
+phina.main(function() {
+
+  // アプリ本体作成
+  var app = phina.display.PixiApp({
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    fps: FPS
+  });
+
+  // アセットのロード
+  var loadingClass = phina.game.PixiLoadingScene({
+    assets: ASSETS
+  });
+  app.replaceScene(loadingClass);
+
+  // ロード完了後 メインシーンへ
+  loadingClass.onloaded = function(){
+    var options = {
+      width: SCREEN_WIDTH,
+      height: SCREEN_HEIGHT,
+      backgroundColor: "0x9AF4BA"
+    }
+    app.replaceScene(MainScene(options));
+  }
+
+  // アプリ実行
+  app.run();
+});
+
+/*
+ * mainScene クラス (PixiSceneを継承していること)
+*/
+phina.define('MainScene', {
+  superClass: 'phina.app.PixiScene',
+
+  init: function(options) {
+
+    // コンストラクタにオプション渡す
+    this.superInit(options);
+
+    // スプライト追加
+    var fox = new PIXI.Sprite.fromImage(phina.asset.AssetManager.get('image', 'fox').src);
+    fox.position.set(100, 100);
+    this.addChild(fox);
+  },
+
+  update: function(app) {
+
+    // インタラクション系はそのまま使えます
+    var p = app.pointer;
+    if (p.getPointingStart()){
+      console.log("you tapped "+p.x, p.y);
+    }
+  }
+});
+
+/*
+ * pixi.js連携用コアクラス
+*/
+phina.define('phina.display.PixiApp', {
+  superClass: 'phina.display.DomApp',
+
+  renderer: null,
+  domElement: null,
+
+  init: function(options) {
+
+    var options = (options || {}).$safe(phina.display.CanvasApp.defaults);
+    var bg = options.backgroundColor;
+    this.renderer = PIXI.autoDetectRenderer(options.width, options.height);
+    options.domElement  = this.renderer.view;
+
+    this.superInit(options);
+
+    // Canvas設定
+    this.canvas = phina.graphics.Canvas();
+    this.canvas.canvas = this.canvas.domElement = this.domElement;
+    this.canvas.setSize(options.width, options.height);
+
+    document.body.appendChild(this.domElement);
+    if (options.fit) this.canvas.fitScreen(true);
+
+    this.replaceScene(phina.app.PixiScene());
+  },
+
+  _draw: function(){
+    if (this.currentScene) this.renderer.render(this.currentScene.stage);
+  }
+});
+
+/*
+ * pixi.js連携用Sceneクラス
+*/
+phina.define('phina.app.PixiScene', {
+  superClass: 'phina.app.Element',
+  stage: null,
+
+  init: function(options) {
+    this.superInit();
+
+    var options = ({}).$safe(options, phina.app.Object2D.defaults);
+
+    this.stage = new PIXI.Container();
+    this.width = options.width;
+    this.height = options.height;
+    if (options.backgroundColor) {
+      this.on('enter', function() {
+        this.app.renderer.backgroundColor = options.backgroundColor;
+      });
+    }
+  },
+
+  addChild: function(pixiObject){
+    this.stage.addChild(pixiObject);
+  },
+
+  removeChild: function(pixiObject){
+    this.stage.removeChild(pixiObject);
+  }
+});
+
+/* ローディング用 仮Sceneクラス　*/
+phina.define('phina.game.PixiLoadingScene', {
+  superClass: 'phina.app.PixiScene',
+
+  init: function(options) {
+    this.superInit(options);
+
+    if (options.assets) {
+      var phinaLoader = phina.asset.AssetLoader();
+
+      phinaLoader.on('progress', function(e) {
+        // ゲージアニメーションなどで進捗状況を知らせる場合はここを更新
+      });
+
+      // ロード完了後、イベント発火
+      phinaLoader.on('load', function(){
+        this.flare('loaded');
+      }.bind(this));
+
+      phinaLoader.load(options.assets);
+    }
+  }
+});
+
+</script>
+</body>
+</html>

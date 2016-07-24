@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>phina x pixi</title>
+</head>
+
+<body>
+
+<script src='http://cdn.rawgit.com/phi-jp/phina.js/v0.2.0/build/phina.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.11/pixi.min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+'use strict';
+
+var SCREEN_WIDTH = 512;
+var SCREEN_HEIGHT = 512;
+var FPS = 60;
+var ASSETS = {
+  image: {
+    'fox': '../fox64x64.png'
+  }
+};
+
+phina.main(function() {
+
+  // アプリ本体作成
+  var app = phina.display.CanvasApp({
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    fps: FPS
+  });
+
+  // アセットのロード
+  var loadingClass = phina.game.LoadingScene({
+    assets: ASSETS,
+    exitType: ''
+  });
+  app.replaceScene(loadingClass);
+
+  // ロード完了後 メインシーンへ
+  loadingClass.onloaded = function(){
+    var options = {
+      width: SCREEN_WIDTH,
+      height: SCREEN_HEIGHT,
+      backgroundColor: "#9AF4BA"
+    }
+    app.replaceScene(MainScene(options));
+  }
+
+  // アプリ実行
+  app.run();
+});
+
+/*
+ * mainScene クラス
+*/
+phina.define('MainScene', {
+  superClass: 'phina.display.DisplayScene',
+
+  init: function(options) {
+
+    // コンストラクタにオプション渡す
+    this.superInit(options);
+
+    // レイヤーの作成 (オプションを渡すこと)
+    this.pixiLayer = phina.display.PixiLayer(options).addChildTo(this);
+
+    // レイヤーにスプライト追加
+    var fox = new PIXI.Sprite.fromImage(phina.asset.AssetManager.get('image', 'fox').src);
+    fox.position.set(100, 100);
+    this.pixiLayer.addChild(fox);
+  },
+
+  update: function(app) {
+
+  }
+});
+
+/*
+ * pixi.js 簡易連携用レイヤークラス
+*/
+phina.define('phina.display.PixiLayer', {
+  superClass: 'phina.display.DisplayElement',
+
+  stage: null,
+  renderer: null,
+
+  init: function(options) {
+    this.superInit();
+
+    this.stage = new PIXI.Container();
+    this.renderer = PIXI.autoDetectRenderer(options.width, options.height, {transparent: true});
+
+    this.on('enterframe', function() {
+      this.renderer.render(this.stage);
+    });
+  },
+
+  draw: function(canvas) {
+    var domElement = this.renderer.view;
+    canvas.context.drawImage(domElement, 0, 0, domElement.width, domElement.height);
+  },
+
+  addChild: function(pixiObject){
+    this.stage.addChild(pixiObject);
+    return this;
+  },
+
+  removeChild: function(pixiObject){
+    this.stage.removeChild(pixiObject);
+    return this;
+  }
+});
+</script>
+</body>
+</html>

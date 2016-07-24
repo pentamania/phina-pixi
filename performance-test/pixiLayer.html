@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>phina x pixi performance test</title>
+  <link href="./style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div id="counterDisplay"></div>
+
+<script src='../lib/phina.js' charset="utf-8"></script>
+<script src="../lib/pixi.min.js" charset="utf-8"></script>
+<script src='common.js'></script>
+
+<script type="text/javascript">
+phina.main(function() {
+
+  // アプリ本体作成
+  var app = phina.display.CanvasApp({
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    fps: FPS
+  });
+
+  app.enableStats();
+
+  // アセットロード
+  var loadingClass = phina.game.LoadingScene({
+    assets: ASSETS,
+    exitType: ''
+  });
+  app.replaceScene(loadingClass);
+
+  // ロード完了後
+  loadingClass.onloaded = function(){
+    app.replaceScene(MainScene({
+      width: SCREEN_WIDTH,
+      height: SCREEN_HEIGHT,
+      backgroundColor: "#9AF4BA"
+    }));
+  }
+
+  app.run();
+});
+
+// Main Scene
+/* pixiLayer Version */
+phina.define('MainScene', {
+  superClass: 'phina.display.DisplayScene',
+
+  init: function(options) {
+    console.log('using PixiLayerScene');
+    this.superInit(options);
+    this.foxes = [];
+
+    // message
+    phina.display.Label('画面をタップして狐を増やそう').setOrigin(0, 0).setPosition(16,16).addChildTo(this);
+
+    this.pixiLayer = phina.display.PixiLayer(options).addChildTo(this);
+    for (var i = 0; i < addedFoxes; i++) {
+      var fox = generateFox(100, 100);
+      this.pixiLayer.addChild(fox);
+      this.foxes.push(fox);
+    }
+  },
+
+  update: function(app) {
+    var p = app.pointer;
+
+    if (p.getPointing()) {
+      for (var i = 0; i < addedFoxes; i++) {
+        var fox = generateFox(p.x, p.y);
+        this.pixiLayer.addChild(fox);
+        this.foxes.push(fox);
+      }
+    }
+
+    this.foxes.forEach(function(fox) {
+      fox.move();
+      if (fox.x < 0 || SCREEN_WIDTH < fox.x) fox.reverse("x");
+      if (fox.y < 0 || SCREEN_HEIGHT < fox.y) fox.reverse("y");
+    });
+
+    counterDisplay.innerHTML = "Foxes: "+this.foxes.length;
+  }
+});
+</script>
+</body>
+</html>
