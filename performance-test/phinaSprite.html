@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>phina x pixi performance test</title>
+  <title>phina x pixi performance test: phina-only</title>
   <link href="./style.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -11,17 +11,24 @@
 <div id="counterDisplay"></div>
 
 <script src='../lib/phina.js' charset="utf-8"></script>
-<script src="../lib/pixi.min.js" charset="utf-8"></script>
+<!-- <script src="../lib/pixi.min.js" charset="utf-8"></script> -->
 <script src='common.js'></script>
 
 <script type="text/javascript">
+
+/**
+ * phina-pixiのパフォーマンステスト
+ * phinaオンリーバージョン（canvas2D版）
+ *
+ */
 phina.main(function() {
 
   // アプリ本体作成
   var app = phina.display.CanvasApp({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
-    fps: FPS
+    fps: FPS,
+    fit: false,
   });
 
   app.enableStats();
@@ -33,7 +40,7 @@ phina.main(function() {
   });
   app.replaceScene(loadingClass);
 
-  // ロード完了後
+  // ロード完了後、メインシーンへ移る
   loadingClass.onloaded = function(){
     app.replaceScene(MainScene({
       width: SCREEN_WIDTH,
@@ -45,44 +52,46 @@ phina.main(function() {
   app.run();
 });
 
-// Main Scene
+/* Main Scene */
 phina.define('MainScene', {
   superClass: 'phina.display.DisplayScene',
 
   init: function(options) {
     this.superInit(options);
-    this.foxes = [];
 
-    // message
+    /* message */
     phina.display.Label('画面をタップして狐を増やそう').setOrigin(0, 0).setPosition(16,16).addChildTo(this);
-    // var fox = phina.display.Sprite('fox').setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2).addChildTo(this);
-    // this.foxes.push(fox);
-    // console.log(phina.asset.AssetManager.get('image', 'fox'));
-    for (var i = 0; i < addedFoxes; i++) {
-      var fox = generateFox(100, 100, "phina").addChildTo(this);
-      this.foxes.push(fox);
+
+    /* container */
+    this.spriteLayer = phina.display.DisplayElement(options).addChildTo(this);
+
+    /* メッセージ更新 */
+    this.on('spriteAdded', function() {
+      counterDisplay.innerHTML = "Foxes: " + this.spriteLayer.children.length;
+    })
+
+    /* 初期配置 */
+    this.addSprites();
+  },
+
+  addSprites: function(x, y) {
+    for (var i = 0; i < ADDED_SPRITE; i++) {
+      var fox = generateFox(x||100, y||100, "phina");
+      this.spriteLayer.addChild(fox);
+      this.flare('spriteAdded');
     }
   },
 
   update: function(app) {
+    /* 入力 */
     var p = app.pointer;
+    if (p.getPointing()) this.addSprites(p.x, p.y);
 
-    if (p.getPointing()) {
-      for (var i = 0; i < addedFoxes; i++) {
-        var fox = generateFox(p.x, p.y, "phina").addChildTo(this);
-        this.foxes.push(fox);
-      }
-      // console.log(app.stats);
-      // console.log(app.stats.fps);
-    }
-
-    this.foxes.forEach(function(fox) {
+    this.spriteLayer.children.forEach(function(fox) {
       fox.move();
       if (fox.x < 0 || SCREEN_WIDTH < fox.x) fox.reverse("x");
       if (fox.y < 0 || SCREEN_HEIGHT < fox.y) fox.reverse("y");
     });
-
-    counterDisplay.innerHTML = "Foxes: "+this.foxes.length;
   }
 });
 </script>

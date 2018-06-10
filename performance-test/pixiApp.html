@@ -12,19 +12,26 @@
 
 <script src='../lib/phina.js' charset="utf-8"></script>
 <script src="../lib/pixi.min.js" charset="utf-8"></script>
+<script src='../phina-pixi.js'></script>
 <script src='common.js'></script>
 
 <script type="text/javascript">
-phina.main(function() {
 
- // アプリ本体作成
+/**
+ * phina-pixiのパフォーマンステスト：pixiApp仕様
+ * Appコア部分から変え、完全に描画をpixi側にさせる
+ *
+ */
+phina.main(function() {
+  // アプリ本体作成
   var app = phina.display.PixiApp({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
-    fps: FPS
-  });
-
-  app.enableStats();
+    fps: FPS,
+    // skip: SKIP,
+    fit: false
+  })
+  .enableStats();
 
   // アセットロード
   var loadingClass = phina.game.PixiLoadingScene({
@@ -34,8 +41,8 @@ phina.main(function() {
   });
   app.replaceScene(loadingClass);
 
-  // ロード後
-  loadingClass.onloaded = function(){
+  // ロード後シーン遷移
+  loadingClass.onloaded = function() {
     app.replaceScene(MainScene({
       width: SCREEN_WIDTH,
       height: SCREEN_HEIGHT,
@@ -46,46 +53,64 @@ phina.main(function() {
   app.run();
 });
 
-// Main Scene
-/* pixiRenderer Version */
+/* Main Scene */
 phina.define('MainScene', {
   superClass: 'phina.app.PixiScene',
 
   init: function(options) {
-    console.log('using pixi renderer');
     this.superInit(options);
 
+    /* メッセージ pixi.text */
     var message = new PIXI.Text('画面をタップして狐を増やそう')
     message.position.set(16,16)
     this.addChild(message);
 
-    this.foxes = [];
-    for (var i = 0; i < addedFoxes; i++) {
-      var fox = generateFox(100, 100);
-      this.addChild(fox);
-      this.foxes.push(fox);
+    /* container: v3 particle */
+    // 128x128なら2000, 64x64なら7000, 32*32なら24000 16x16 なら65000
+    // this.spriteLayer = new PIXI.ParticleContainer(100000, {
+      // scale: true,
+      // position: true,
+      // rotation: true,
+      // uvs: true,
+      // alpha: true
+    // });
+
+    /* container */
+    // v3 128x128なら2300, 64x64なら7500, 32*32なら23500, 16x16 なら26000
+    this.spriteLayer = new PIXI.Container();
+    this.addChild(this.spriteLayer);
+
+    /* メッセージ更新 */
+    this.on('spriteAdded', function() {
+      counterDisplay.innerHTML = "Foxes: "+this.spriteLayer.children.length;
+    })
+
+    /* 初期配置 */
+    this.addSprites();
+    // var sp = this.star = phina.pixi.StarShape();
+    // this.addChild(sp.pixiObject);
+  },
+
+  addSprites: function(x, y) {
+    for (var i = 0; i < ADDED_SPRITE; i++) {
+      var fox = generateFox(x||100, y||100);
+      this.spriteLayer.addChild(fox);
+      this.flare('spriteAdded');
     }
   },
 
   update: function(app) {
+    /* 入力 */
     var p = app.pointer;
+    if (p.getPointing()) this.addSprites(p.x, p.y)
 
-    if (p.getPointing()) {
-      for (var i = 0; i < addedFoxes; i++) {
-        var fox = generateFox(p.x, p.y);
-        this.addChild(fox);
-        this.foxes.push(fox);
-      }
-    }
-
-    this.foxes.forEach(function(fox) {
+    this.spriteLayer.children.forEach(function(fox) {
       fox.move();
       if (fox.x < 0 || SCREEN_WIDTH < fox.x) fox.reverse("x");
       if (fox.y < 0 || SCREEN_HEIGHT < fox.y) fox.reverse("y");
     });
-
-    counterDisplay.innerHTML = "Foxes: "+this.foxes.length;
   }
+
 });
 </script>
 </body>
