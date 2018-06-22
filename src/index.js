@@ -1,4 +1,5 @@
 /* globalizeされた時を考え、Pixi...の接頭辞をつける */
+import './override.js';
 export {default as PixiApp} from './App.js';
 export {PixiElement, PixiScene, PixiDisplayElement} from './element.js';
 export {default as PixiTexture} from './Texture.js';

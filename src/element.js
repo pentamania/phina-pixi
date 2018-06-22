@@ -31,8 +31,6 @@ export const PixiElement = phina.createClass({
       /* 純正pixiオブジェクト */
       // console.warn('[phina-pixi.js]: PixiElement child is recommended to extend PixiDisplayElement', child);
       this[PIXI_KEY].addChild(child);
-      // @fixme: phinaの_updateElementに引っかかるため、仮関数を用意
-      child.has = function() {};
     } else {
       // if (child.parent) child.remove();
       this[PIXI_KEY].addChild(child[PIXI_KEY]);
@@ -54,7 +52,6 @@ export const PixiElement = phina.createClass({
       if (child[PIXI_KEY] === undefined) {
         /* 純正pixiオブジェクト */
         this[PIXI_KEY].removeChild(child);
-        if (child.has) child.has = null;
       } else {
         this[PIXI_KEY].removeChild(child[PIXI_KEY]);
         child.has('removed') && child.flare('removed');
