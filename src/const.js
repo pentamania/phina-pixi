@@ -1,0 +1,1 @@
+export const PIXI_KEY = '$pixi';
