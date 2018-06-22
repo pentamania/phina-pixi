@@ -8,11 +8,12 @@
 </head>
 
 <body>
+<div>PixiLayer ver</div>
 <div id="counterDisplay"></div>
 
-<script src='../lib/phina.js' charset="utf-8"></script>
-<script src="../lib/pixi.min.js" charset="utf-8"></script>
-<script src='../phina-pixi.js'></script>
+<script src='https://cdn.rawgit.com/phi-jp/phina.js/v0.2.2/build/phina.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js" charset="utf-8"></script>
+<script src='../dist/phina-pixi.js'></script>
 <script src='common.js'></script>
 
 <script type="text/javascript">
@@ -25,31 +26,17 @@
  */
 phina.main(function() {
   // アプリ本体作成
-  var app = phina.display.CanvasApp({
+  // var app = phina.display.CanvasApp({
+  var app = phina.game.GameApp({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     fps: FPS,
-    fit: false,
-  });
-
-  app.enableStats();
-
-  // アセットロード
-  var loadingClass = phina.game.LoadingScene({
     assets: ASSETS,
-    exitType: ''
+    startLabel: 'main',
+    fit: false,
+    backgroundColor: "#9AF4BA"
   });
-  app.replaceScene(loadingClass);
-
-  // ロード完了後、メインシーンへ移る
-  loadingClass.onloaded = function(){
-    app.replaceScene(MainScene({
-      width: SCREEN_WIDTH,
-      height: SCREEN_HEIGHT,
-      backgroundColor: "#9AF4BA"
-    }));
-  }
-
+  app.enableStats();
   app.run();
 });
 
@@ -61,14 +48,24 @@ phina.define('MainScene', {
     this.superInit(options);
 
     /* message */
-    phina.display.Label('画面をタップして狐を増やそう').setOrigin(0, 0).setPosition(16,16).addChildTo(this);
+    phina.display.Label({
+      text: '画面をタップしてスプライトを増やそう',
+      fontSize: FONT_SIZE,
+    })
+    .setOrigin(0, 0)
+    .setPosition(16, 16)
+    .addChildTo(this);
 
-    /* container */
-    this.spriteLayer = phina.display.PixiLayer(options).addChildTo(this);
+    /* layer */
+    this.spriteLayer = phina.pixi.PixiLayer({
+      width: options.width,
+      height: options.height,
+    })
+    .addChildTo(this);
 
     /* メッセージ更新 */
     this.on('spriteAdded', function() {
-      counterDisplay.innerHTML = "Foxes: " + this.spriteLayer.stage.children.length;
+      counterDisplay.innerHTML = "Sprites: " + this.spriteLayer.children.length;
     })
 
     /* 初期配置 */
@@ -88,12 +85,13 @@ phina.define('MainScene', {
     var p = app.pointer;
     if (p.getPointing()) this.addSprites(p.x, p.y);
 
-    this.spriteLayer.stage.children.forEach(function(fox) {
+    this.spriteLayer.children.forEach(function(fox) {
       fox.move();
       if (fox.x < 0 || SCREEN_WIDTH < fox.x) fox.reverse("x");
       if (fox.y < 0 || SCREEN_HEIGHT < fox.y) fox.reverse("y");
     });
-  }
+  },
+
 });
 
 </script>

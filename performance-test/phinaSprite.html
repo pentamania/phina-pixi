@@ -10,8 +10,7 @@
 <body>
 <div id="counterDisplay"></div>
 
-<script src='../lib/phina.js' charset="utf-8"></script>
-<!-- <script src="../lib/pixi.min.js" charset="utf-8"></script> -->
+<script src='https://cdn.rawgit.com/phi-jp/phina.js/v0.2.2/build/phina.js'></script>
 <script src='common.js'></script>
 
 <script type="text/javascript">
@@ -22,6 +21,7 @@
  *
  */
 phina.main(function() {
+  if (ASSETS['pixi']) delete ASSETS['pixi'];
 
   // アプリ本体作成
   var app = phina.display.CanvasApp({
@@ -60,14 +60,20 @@ phina.define('MainScene', {
     this.superInit(options);
 
     /* message */
-    phina.display.Label('画面をタップして狐を増やそう').setOrigin(0, 0).setPosition(16,16).addChildTo(this);
+    phina.display.Label({
+      text: '画面をタップしてスプライトを増やそう',
+      fontSize: FONT_SIZE,
+    })
+    .setOrigin(0, 0)
+    .setPosition(16,16)
+    .addChildTo(this);
 
     /* container */
     this.spriteLayer = phina.display.DisplayElement(options).addChildTo(this);
 
     /* メッセージ更新 */
     this.on('spriteAdded', function() {
-      counterDisplay.innerHTML = "Foxes: " + this.spriteLayer.children.length;
+      counterDisplay.innerHTML = "Sprites: " + this.spriteLayer.children.length;
     })
 
     /* 初期配置 */

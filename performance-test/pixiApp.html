@@ -8,14 +8,35 @@
 </head>
 
 <body>
+<div>PixiApp ver</div>
 <div id="counterDisplay"></div>
 
-<script src='../lib/phina.js' charset="utf-8"></script>
-<script src="../lib/pixi.min.js" charset="utf-8"></script>
-<script src='../phina-pixi.js'></script>
+<script src='https://cdn.rawgit.com/phi-jp/phina.js/v0.2.2/build/phina.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js" charset="utf-8"></script>
+<script src='../dist/phina-pixi.js'></script>
 <script src='common.js'></script>
 
 <script type="text/javascript">
+
+// 仮
+phina.define('phina.pixi.PixiLoadingScene', {
+  superClass: phina.pixi.PixiScene,
+
+  init: function(options) {
+    this.superInit(options);
+
+    if (options.assets) {
+      var phinaLoader = phina.asset.AssetLoader();
+
+      // ロード完了後、イベント発火
+      phinaLoader.on('load', function(){
+        this.flare('loaded');
+      }.bind(this));
+
+      phinaLoader.load(options.assets);
+    }
+  }
+});
 
 /**
  * phina-pixiのパフォーマンステスト：pixiApp仕様
@@ -23,49 +44,50 @@
  *
  */
 phina.main(function() {
-  // アプリ本体作成
-  var app = phina.display.PixiApp({
+  var options = {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     fps: FPS,
     // skip: SKIP,
-    fit: false
-  })
+    assets: ASSETS,
+    fit: false,
+    backgroundColor: "0x9AF4BA"
+  }
+
+  // アプリ本体作成
+  var app = phina.pixi.PixiApp(options)
   .enableStats();
 
-  // アセットロード
-  var loadingClass = phina.game.PixiLoadingScene({
-    assets: ASSETS,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+  // アセットロード：ロード後シーン遷移
+  var loadingClass = phina.pixi.PixiLoadingScene(options);
+  loadingClass.on('loaded', function() {
+    app.replaceScene(MainScene(options));
   });
   app.replaceScene(loadingClass);
-
-  // ロード後シーン遷移
-  loadingClass.onloaded = function() {
-    app.replaceScene(MainScene({
-      width: SCREEN_WIDTH,
-      height: SCREEN_HEIGHT,
-      backgroundColor: "0x9AF4BA"
-    }));
-  }
 
   app.run();
 });
 
 /* Main Scene */
 phina.define('MainScene', {
-  superClass: 'phina.app.PixiScene',
+  superClass: phina.pixi.PixiScene,
 
   init: function(options) {
     this.superInit(options);
 
-    /* メッセージ pixi.text */
-    var message = new PIXI.Text('画面をタップして狐を増やそう')
-    message.position.set(16,16)
-    this.addChild(message);
+    /* メッセージ */
+    // var message = new PIXI.Text('画面をタップして狐を増やそう')
+    // message.position.set(16,16)
+    // this.addChild(message);
+    phina.pixi.PixiLabel({
+      text: '画面をタップしてスプライトを増やそう',
+      fontSize: FONT_SIZE,
+    })
+    .setOrigin(0, 0)
+    .setPosition(16, 16)
+    .addChildTo(this)
 
-    /* container: v3 particle */
+    /* particle-container: （v3）小さなものをレンダリングするとき有効 */
     // 128x128なら2000, 64x64なら7000, 32*32なら24000 16x16 なら65000
     // this.spriteLayer = new PIXI.ParticleContainer(100000, {
       // scale: true,
@@ -77,18 +99,17 @@ phina.define('MainScene', {
 
     /* container */
     // v3 128x128なら2300, 64x64なら7500, 32*32なら23500, 16x16 なら26000
-    this.spriteLayer = new PIXI.Container();
-    this.addChild(this.spriteLayer);
+    // this.spriteLayer = new PIXI.Container();
+    // this.addChild(this.spriteLayer);
+    this.spriteLayer = phina.pixi.PixiDisplayElement().addChildTo(this);
 
     /* メッセージ更新 */
     this.on('spriteAdded', function() {
-      counterDisplay.innerHTML = "Foxes: "+this.spriteLayer.children.length;
+      counterDisplay.innerHTML = "Sprites: "+this.spriteLayer.children.length;
     })
 
     /* 初期配置 */
     this.addSprites();
-    // var sp = this.star = phina.pixi.StarShape();
-    // this.addChild(sp.pixiObject);
   },
 
   addSprites: function(x, y) {
