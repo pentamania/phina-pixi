@@ -1,10 +1,13 @@
 # phina-pixi
-phina.jsとpixi.jsを連携するためのプラグインモジュール  
-Plugin module for phina.js and pixi.js coordination.
+![Tomaxi](https://user-images.githubusercontent.com/10734131/42134514-380896c6-7d78-11e8-8122-29eb6d80aa04.png)
 
-### Support
-- phina v0.2.x
-- pixi v4.x.x
+[phina.js](http://phinajs.com/)の描画に[pixi.js](http://www.pixijs.com/)
+を使用するためのプラグインモジュール  
+Plugin module for phina.js to use pixi.js as rendering engine.
+
+### Example 
+- [Performance test: phina-pixi](https://pentamania.github.io/phina-pixi/performance-test/pixiLayer.html)
+- [Performance test: phina.js only](https://pentamania.github.io/phina-pixi/performance-test/phinaSprite.html)
 
 ### Sample (in browser)
 
@@ -19,9 +22,9 @@ Plugin module for phina.js and pixi.js coordination.
 </head>
 <body>
 
-<script src='./path/to/phina.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
+<script src='https://cdn.rawgit.com/phi-jp/phina.js/v0.2.2/build/phina.js'></script>
 <script src='./path/to/phina-pixi.js'></script>
-
 <script>
 phina.globalize();
 
@@ -33,11 +36,11 @@ phina.define('MainScene', {
 
     // Layer
     this.pixiLayer = PixiLayer(options).addChildTo(this);
-    // this.pixiLayer = phina.pixi.PixiLayer(options).addChildTo(this); // no globalize
+    // this.pixiLayer = phina.pixi.PixiLayer(options).addChildTo(this); // without globalize
 
     // Sprite
     PixiSprite('player')
-    // phina.pixi.PixiSprite('player') // no globalize
+    // phina.pixi.PixiSprite('player') // without globalize
     .addChildTo(this.pixiLayer);
   },
 });
@@ -59,13 +62,13 @@ phina.main(function() {
 </html>
 ```
 
-### Sample (es modules)
+### Sample (ES modules)
 #### Install
-```npm i -S pentamania/phina-pixi```
+```npm install pixi.js phina.js```
 
-※ phina.js, pixi.jsがインストール済みであること
+```npm install pentamania/phina-pixi```
 
-#### Usage
+#### Use
 ```js
 import * as phina from 'phina.js';
 import {PixiLayer, PixiSprite} from 'phina-pixi';
@@ -101,8 +104,15 @@ phina.main(function() {
 });
 ```
 
+#### Supported
+- phina v0.2.x
+- pixi v4.x.x
+
 ## License
 MIT
 
-## Reference
-[phina.pixi.js (similar plugin for pixi v3)](https://github.com/simiraaaa/phina.pixi.js)
+## Donation
+[☺Amazon wish list☺](http://amzn.asia/1NJ5hOd)
+
+## Inspired by
+[phina.pixi.js](https://github.com/simiraaaa/phina.pixi.js)
