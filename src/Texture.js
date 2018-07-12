@@ -1,11 +1,11 @@
 import * as phina from "phina.js";
 import * as PIXI from "pixi.js";
+var ASSET_TYPE = 'pixi';
 
 /**
  * phina.pixi.PixiTexture
  * @class   PixiTexture
  * @extends phina.asset.Asset
- * ref: https://github.com/simiraaaa/phina.pixi.js
  *
  */
 var PixiTexture = phina.createClass({
@@ -14,9 +14,7 @@ var PixiTexture = phina.createClass({
   init: function(key) {
     this.superInit();
     this._key = key || null;
-    // this.pixiTexture = null;
     this.texture = null;
-    this.textures = null;
   },
 
   /**
@@ -32,8 +30,13 @@ var PixiTexture = phina.createClass({
       if (resrc.texture) {
         this.texture = resrc.texture;
       } else if (resrc.textures) {
-        // スプライトマップのとき: 全てテクスチャ登録する？
-        this.textures = resrc.textures;
+        /* スプライトマップのときは全てのテクスチャを登録 */
+        resrc.textures.forIn(function(key, texture) {
+          var pixiTexture = PixiTexture();
+          pixiTexture.texture = texture;
+          key = key.replace(/\.[^/.]+$/, ""); // trim .ext
+          phina.asset.AssetManager.set(ASSET_TYPE, key, pixiTexture);
+        })
       }
       loader = null;
       resolve(this);
@@ -43,7 +46,7 @@ var PixiTexture = phina.createClass({
   /**
    * createFrame
    * 完全に新しいtextureを返す
-   * @param  {number} x
+   * @param  {number|object} x - Could be a param object
    * @param  {number} y
    * @param  {number} width
    * @param  {number} height
@@ -128,7 +131,7 @@ var PixiTexture = phina.createClass({
 // phina.asset.AssetLoader.register('pixi', function(key, path) {
 //   return PixiTexture(key).load(path);
 // });
-phina.asset.AssetLoader.assetLoadFunctions.pixi = function(key, path) {
+phina.asset.AssetLoader.assetLoadFunctions[ASSET_TYPE] = function(key, path) {
   return PixiTexture(key).load(path);
 };
 
