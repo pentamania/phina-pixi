@@ -1,0 +1,29 @@
+{
+  "plugins": [],
+  "recurseDepth": 10,
+  "source": {
+    "exclude": [
+      "src/index.js",
+      "src/const.js",
+      "src/utils.js",
+      "src/override.js"
+    ],
+    "includePattern": ".+\\.js(doc|x)?$", // .js|.jsdoc|.jsxファイルが対象
+    "excludePattern": "(^|\\/|\\\\)_" // _から始まるファイルを無視
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc","closure"]
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "showInheritedInNav": true
+  },
+  "opts": {
+    "destination": "./docs/",
+    "encoding": "utf8",
+    "private": true,
+    "recurse": true
+  }
+}

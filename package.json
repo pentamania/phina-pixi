@@ -12,6 +12,9 @@
     "build": "npm run build:dev & npm run build:min",
     "build:dev": "webpack",
     "build:min": "cross-env NODE_ENV=production webpack",
+    "jsdoc:build": "npm run jsdoc:clean && npm run jsdoc:output",
+    "jsdoc:clean": "del-cli docs/*.*",
+    "jsdoc:output": "jsdoc src -c jsdoc.conf.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
@@ -35,5 +38,7 @@
     "cross-env": "^5.2.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3"
+    "del-cli": "^1.1.0",
+    "jsdoc": "^3.5.5",
   }
 }
