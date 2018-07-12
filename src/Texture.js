@@ -3,10 +3,20 @@ import * as PIXI from "pixi.js";
 import { ASSET_TYPE } from "./const.js";
 
 /**
- * phina.pixi.PixiTexture
- * @class   PixiTexture
+ * <pre>
+ * pixi用textureアセットクラス
+ * phina Asset class wrapping.PIXI.Texture
+ * </pre>
+ *
+ * @class   phina.pixi.PixiTexture
+ * @memberOf phina.pixi
  * @extends phina.asset.Asset
  *
+ * @param  {string} key - Name of the key to get this object from AssetManager
+ *
+ * properties: todo
+ * @property {number} width
+ * @property {number} height
  */
 var PixiTexture = phina.createClass({
   superClass: phina.asset.Asset,
@@ -18,9 +28,12 @@ var PixiTexture = phina.createClass({
   },
 
   /**
-   * _load
+   * _load returns resolve result
+   * @private
+   * @instance
+   * @memberof phina.pixi.PixiTexture
    * @param  {function} resolve
-   * @return {resolve return}
+   * @return {void}
    */
   _load: function(resolve) {
     /* loaderロード中はaddできないため、アセットごとにloader生成する */
@@ -44,13 +57,20 @@ var PixiTexture = phina.createClass({
   },
 
   /**
-   * createFrame
-   * 完全に新しいtextureを返す
-   * @param  {number|object} x - Could be a param object
-   * @param  {number} y
-   * @param  {number} width
-   * @param  {number} height
-   * @return {PixiTexture}
+   * <pre>
+   * create and return new PIXI.texture
+   * You can set frame by passing parameters
+   * 新しいPIXI.textureを返す
+   * 矩形パラメータを渡すことでフレーム指定も可能
+   * </pre>
+   * @instance
+   * @memberof phina.pixi.PixiTexture
+   *
+   * @param  {number|object} [x] - Could be a param object
+   * @param  {number} [y] - frame rect origin y
+   * @param  {number} [width] - frame rect width
+   * @param  {number} [height]- frame rect height
+   * @return {PIXI.Texture}
    */
   createFrame: function(x, y, width, height) {
     if (typeof x === 'object') {
@@ -70,7 +90,11 @@ var PixiTexture = phina.createClass({
   },
 
   /**
+   * Create new Pixi texture from HTMLcanvas
+   * @instance
+   * @memberof phina.pixi.PixiTexture
    * @param {HTMLCanvasElement} canvas
+   * @return {this}
    */
   fromCanvas: function(canvas) {
     this.texture = PIXI.Texture.fromCanvas(canvas);
@@ -78,7 +102,11 @@ var PixiTexture = phina.createClass({
   },
 
   /**
+   * Create new Pixi texture from phina Shape class
+   * @instance
+   * @memberof phina.pixi.PixiTexture
    * @param {phina.display.Shape} shape
+   * @return {this}
    */
   fromShape: function(shape) {
     if (shape._dirtyDraw) {
@@ -87,6 +115,12 @@ var PixiTexture = phina.createClass({
     return this.fromCanvas(shape.canvas.domElement);
   },
 
+  /**
+   * Update texture
+   * @instance
+   * @memberof phina.pixi.PixiTexture
+   * @return {this}
+   */
   update: function() {
     this.texture.update();
     return this;
@@ -105,16 +139,35 @@ var PixiTexture = phina.createClass({
   },
 
   _static: {
+
+    /**
+     * static version of [createFrame]{@link phina.pixi.PixiTexture#createFrame}
+     * @static
+     * @memberof phina.pixi.PixiTexture
+     * @return {PIXI.Texture}
+     */
     createFrame: function(texture, x, y, width, height) {
       var pixiTexture = PixiTexture();
       pixiTexture.texture = texture;
       return pixiTexture.createFrame(x, y, width, height);
     },
 
+    /**
+     * static version of [fromCanvas]{@link phina.pixi.PixiTexture#fromCanvas}
+     * @static
+     * @memberof phina.pixi.PixiTexture
+     * @return {PixiTexture}
+     */
     fromCanvas: function(canvas) {
       return PixiTexture().fromCanvas(canvas);
     },
 
+    /**
+     * static version of [fromShape]{@link phina.pixi.PixiTexture#fromShape}
+     * @static
+     * @memberof phina.pixi.PixiTexture
+     * @return {PixiTexture}
+     */
     fromShape: function(shape) {
       return PixiTexture().fromShape(shape);
     },

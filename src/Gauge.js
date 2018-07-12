@@ -5,11 +5,15 @@ import {PixiDisplayElement} from './element.js';
 import {toHex} from "./utils.js";
 
 /**
- * phina.pixi.PixiGauge
- * @class   PixiGauge
- * @extends PixiDisplayElement
+ * <pre>
+ * Alternative of phina.ui.Gauge class
+ * </pre>
  *
- * @param  {Object} params
+ * @class   phina.pixi.PixiGauge
+ * @memberOf phina.pixi
+ * @extends phina.pixi.PixiDisplayElement
+ *
+ * @param  {Object} params - todo
  */
 export default phina.createClass({
   superClass: PixiDisplayElement,
@@ -42,9 +46,12 @@ export default phina.createClass({
   },
 
   /**
-   * setRatio
-   * @param {number} v - clamp to 0.0~1.0
+   * set the value as ratio
+   * @instance
+   * @memberof phina.pixi.PixiGauge
    * @todo value should be changed
+   *
+   * @param {number} v - clamp to 0.0~1.0
    * @return {this}
    */
   setRatio: function(v) {
@@ -56,21 +63,27 @@ export default phina.createClass({
   },
 
   /**
-   * setValue
-   * @param {number} value - negative acceptable
+   * set value
+   * @instance
+   * @memberof phina.pixi.PixiGauge
+   *
+   * @param {number} v - clamp to 0.0~1.0
    * @return {this}
    */
   setValue: function(value) {
     value = Math.clamp(value, this._minValue, this._maxValue);
     this._value = value;
     this.ratio = value/this._maxValue;
-
     this._drawGauge();
+
     return this;
   },
 
   /**
-   * setColor
+   * set gauge and background color
+   * @instance
+   * @memberof phina.pixi.PixiGauge
+   *
    * @param {number|string} color hex
    * @param {number|string} bgColor hex
    * @return {this}
@@ -95,8 +108,9 @@ export default phina.createClass({
   },
 
   /**
-   * refill
-   * set to max
+   * set the value to max
+   * @instance
+   * @memberof phina.pixi.PixiGauge
    * @return {this}
    */
   refill: function() {
@@ -105,11 +119,13 @@ export default phina.createClass({
   },
 
   /**
-   * setMask
-   * TODO: マスクサイズをリサイズする手段
+   * set up mask
+   * @instance
+   * @memberof phina.pixi.PixiGauge
+   * @todo: マスクサイズをリサイズする手段
+   *
    * @return {this}
    */
-  //
   setMask: function() {
     var mask = new PIXI.Graphics();
     mask.beginFill();
@@ -124,8 +140,11 @@ export default phina.createClass({
   },
 
   /**
-   * _drawGauge
+   * update gauge view
    * @private
+   * @instance
+   * @memberof phina.pixi.PixiGauge
+   *
    * @return {void}
    */
   _drawGauge: function() {

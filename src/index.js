@@ -1,3 +1,11 @@
+/**
+ * @namespace phina
+ */
+/**
+ * @namespace pixi
+ * @memberof phina
+ */
+
 /* globalizeされた時を考え、Pixi...の接頭辞をつける */
 import './override.js';
 export {default as PixiApp} from './App.js';

@@ -4,7 +4,8 @@ import { ASSET_TYPE } from "./const.js";
 import PixiTexture from "./Texture.js";
 
 /**
- * pixi側elementがhasを持っていないので存在確認追加
+ * Add 'has' existence check for PIXI elements.
+ * pixi側elementがhasを持っていないので存在確認
  */
 phina.app.Updater.prototype._updateElement = function(element) {
   var app = this.app;

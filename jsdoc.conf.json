@@ -3,7 +3,6 @@
   "recurseDepth": 10,
   "source": {
     "exclude": [
-      "src/index.js",
       "src/const.js",
       "src/utils.js",
       "src/override.js"

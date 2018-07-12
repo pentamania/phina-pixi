@@ -4,12 +4,16 @@ import {PIXI_KEY} from './const.js';
 import {PixiDisplayElement} from './element.js';
 
 /**
- * phina.pixi.PixiLayer
- * @class   PixiLayer
- * @extends PixiDisplayElement
- * 簡易連携用レイヤークラス
+ * <pre>
+ * A layer class which has a pixi's renderer to draw children by itself.
+ * pixi側rendererをもち、自分自身で子要素を描画できるレイヤークラス
+ * </pre>
  *
- * @param {Object} options
+ * @class   phina.pixi.PixiLayer
+ * @memberOf phina.pixi
+ * @extends phina.pixi.PixiDisplayElement
+ *
+ * @param  {Object} params - todo
 */
 export default phina.createClass({
   superClass: PixiDisplayElement,
@@ -36,11 +40,24 @@ export default phina.createClass({
     });
   },
 
-  // phina側と整合性を取るため必要
+  /**
+   * Defined to get along with phina's drawing process
+   * @private
+   * @instance
+   * @memberof phina.pixi.PixiLayer
+   * @return {void}
+   */
   _calcWorldMatrix: function() {
     return phina.app.Object2D.prototype._calcWorldMatrix();
   },
 
+  /**
+   * Draw the renderer view
+   * @override
+   * @instance
+   * @memberof phina.pixi.PixiLayer
+   * @return {void}
+   */
   draw: function(canvas) {
     // @fixme: こちらではrotationの描画がうまくいかない
     // var image = this.renderer.view;

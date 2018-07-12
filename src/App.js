@@ -10,8 +10,16 @@ var defaultParams = {
 };
 
 /**
-* @class phina.pixi.PixiApp
-*
+ * <pre>
+ * Create app core using pixi.js's renderer for rendering.
+ * レンダラーとしてpixi.js rendererを使うAppコアクラス
+ * </pre>
+ *
+ * @class phina.pixi.PixiApp
+ * @memberOf phina.pixi
+ * @extends phina.display.DomApp
+ *
+ * @param {object} options - parameter almost same as phina.display.CanvasApp
 */
 export default phina.createClass({
   superClass: phina.display.DomApp,
@@ -65,18 +73,34 @@ export default phina.createClass({
   },
 
   /**
+   * Render the stage(container) of currentScene.
+   * @private
+   * @instance
    * @override
+   * @memberof phina.pixi.PixiApp
    * @return {void}
    */
   _draw: function() {
     if (this.currentScene) this.renderer.render(this.currentScene.stage);
   },
 
+  /**
+   * Returns whether the current renderer is using webGL.
+   * @instance
+   * @memberof phina.pixi.PixiApp
+   * @return {boolean}
+   */
   usingWebGL: function() {
     return this.renderer instanceof PIXI.WebGLRenderer;
   },
 
   _static: {
+
+    /**
+     * Default parameter of phina.pixi.PixiApp
+     * @static
+     * @memberof phina.pixi.PixiApp
+     */
     defaults: defaultParams,
   },
 })

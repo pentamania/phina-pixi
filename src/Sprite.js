@@ -5,9 +5,9 @@ import {PixiDisplayElement} from './element.js';
 import PixiTexture from './Texture.js';
 
 /**
- * phina.pixi.PixiSprite
- * @class   PixiSprite
- * @extends PixiDisplayElement
+ * @class phina.pixi.PixiSprite
+ * @memberOf phina.pixi
+ * @extends phina.pixi.PixiDisplayElement
  *
  * @param {string|phina.pixi.PixiTexture|PIXI.Texture} image - String should be a key name
  * @param {number} [width]
@@ -31,7 +31,10 @@ export default phina.createClass({
   },
 
   /**
-   * 基本となる画像（テクスチャ）をセット
+   * Set the texture/image.
+   * @instance
+   * @memberof phina.pixi.PixiSprite
+   *
    * @param {string|phina.pixi.PixiTexture|PIXI.Texture} image
    * @param {number} [width]
    * @param {number} [height]
@@ -61,8 +64,10 @@ export default phina.createClass({
   },
 
   /**
-   * フレーム最終調整・セット
    * @private
+   * @instance
+   * @memberof phina.pixi.PixiSprite
+   *
    * @param {phina.pixi.PixiTexture|PIXI.Sprite} image
    * @return {void}
    */
@@ -75,9 +80,10 @@ export default phina.createClass({
   },
 
   /**
-   * indexに応じたフレームのセット
    * @instance
-   * @param {number|object} index - Could be a param object
+   * @memberof phina.pixi.PixiSprite
+   *
+   * @param {number|object} index - The index of the frame. Could be a param object
    * @param {number} [width] - width of frame
    * @param {number} [height] - height of frame
    * @return {this}
@@ -108,6 +114,16 @@ export default phina.createClass({
     return this;
   },
 
+  /**
+   * set frame and update texture
+   * @instance
+   * @memberof phina.pixi.PixiSprite
+   *
+   * @param {number|object} index - Could be a param object
+   * @param {number} [width] - width of frame
+   * @param {number} [height] - height of frame
+   * @return {this}
+   */
   resetFrame: function(x, y, width, height) {
     var texture = this._image.texture;
     texture.frame.set(x, y, width, height);

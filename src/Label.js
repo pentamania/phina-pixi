@@ -18,11 +18,26 @@ var defaultParams = {
 };
 
 /**
- * phina.pixi.PixiLabel|phina.pixi.PixiText
- * @class   PixiLabel|PixiText
+ * <pre>
+ * テキスト描画クラス
+ * Text rendering wrapper class.
+ * Another name: <strong>phina.pixi.PixiText</strong>
+ * </pre>
+ *
+ * @todo  Add all properties
+ * @class   phina.pixi.PixiLabel
+ * @memberOf phina.pixi
  * @extends PixiDisplayElement
  *
  * @param  {Object} params
+ *
+ * @property {object} style - <Readonly> Style of pixi.object
+ * @property {string} text - text content
+ * @property {string} font - <Readonly> Font Property of pixi.object
+ * @property {string} fontFamily
+ * @property {number} fontSize
+ * @property {number} fontWeight
+ *
  */
 export default phina.createClass({
   superClass: PixiDisplayElement,
@@ -64,16 +79,9 @@ export default phina.createClass({
   },
 
   _accessor: {
-    /**
-     * style
-     * readonly
-     */
     style: {
       get: function() { return this[PIXI_KEY].style; },
     },
-    /**
-     * text
-     */
     text: {
       get: function() { return this._text; },
       set: function(v) {

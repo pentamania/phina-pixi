@@ -3,10 +3,12 @@ import * as PIXI from "pixi.js";
 import {PIXI_KEY} from './const.js';
 
 /**
- * phina.pixi.PixiElement
- * @class   PixiElement
+ * @class phina.pixi.PixiElement
+ * @memberOf phina.pixi
  * @extends phina.app.Element
- * 基本抽象クラス
+ *
+ * @property {PIXI.DisplayObject[]} children
+ *
  *
  * @param {void}
 */
@@ -20,7 +22,13 @@ export const PixiElement = phina.createClass({
   },
 
   /**
+   * Add child to internal Pixi container
+   * @instance
    * @override
+   * @memberof phina.pixi.PixiElement
+   *
+   * @param {PIXI.DisplayObject | phina.pixi.PixiElement} child
+   * @return {this}
    */
   addChild: function(child) {
     if (child.parent) parent.removeChild(child);
@@ -41,7 +49,13 @@ export const PixiElement = phina.createClass({
   },
 
   /**
+   * Remove child from internal Pixi container
+   * @instance
    * @override
+   * @memberof phina.pixi.PixiElement
+   *
+   * @param {PIXI.DisplayObject | phina.pixi.PixiElement} child
+   * @return {this}
    */
   removeChild: function(child) {
     var index = this.children.indexOf(child);
@@ -61,7 +75,12 @@ export const PixiElement = phina.createClass({
   },
 
   /**
-   * getPixiChildren
+   * Get all children in Pixi container
+   * @instance
+   * @override
+   * @memberof phina.pixi.PixiElement
+   *
+   * @param {void}
    * @return {Array}
    */
   getPixiChildren: function() {
@@ -70,12 +89,13 @@ export const PixiElement = phina.createClass({
 
 });
 
+
 /**
- * phina.pixi.PixiScene
- * @class   PixiScene
- * @extends PixiElement
+ * @class phina.pixi.PixiScene
+ * @memberOf phina.pixi
+ * @extends phina.pixi.PixiElement
  *
- * @param object
+ * @param {object} options
 */
 export const PixiScene = phina.createClass({
 // phina.define('phina.app.PixiScene', {
@@ -91,11 +111,17 @@ export const PixiScene = phina.createClass({
   },
 });
 
+
 /**
- * phina.pixi.PixiDisplayElement
- * @class   PixiDisplayElement
- * @extends PixiElement
+ * @class phina.pixi.PixiDisplayElement
+ * @memberOf phina.pixi
+ * @extends phina.pixi.PixiElement
  *
+ * todo
+ * @property {number} x - x position of this opject.
+ *
+ * @param {PIXI.DisplayObject} pixiObject
+ * @param {object} options
 */
 export const PixiDisplayElement = phina.createClass({
 // phina.define('phina.pixi.DisplayElement', {
@@ -129,6 +155,12 @@ export const PixiDisplayElement = phina.createClass({
     // this._filters = {};
   },
 
+  /**
+   * @instance
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   activateInteraction: function() {
     this.setInteractive(true);
     this._setUpInteraction();
@@ -136,9 +168,12 @@ export const PixiDisplayElement = phina.createClass({
   },
 
   /**
-   * _setUpInteraction
-   * 無理やりインタラクション設定（仮）
-   * phina側のinteractionは常にfalseになってること
+   * Add interaction event to the element (temp)
+   * @instance
+   * @private
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {void}
    */
   _setUpInteraction: function() {
     ['mousedown', 'touchstart'].forEach(function(event) {
@@ -166,6 +201,13 @@ export const PixiDisplayElement = phina.createClass({
     }.bind(this));
   },
 
+  /**
+   * @instance
+   * @override
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   setInteractive: function(flag, type) {
     this.interactive = flag;
     if (type) {
@@ -174,23 +216,50 @@ export const PixiDisplayElement = phina.createClass({
     return this;
   },
 
+  /**
+   * @instance
+   * @override
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   setPosition: function(x, y) {
     this[PIXI_KEY].position.x = x;
     this[PIXI_KEY].position.y = y;
     return this;
   },
 
+  /**
+   * @instance
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   setAlpha: function(v) {
     this.alpha = v;
     return this;
   },
 
+  /**
+   * @instance
+   * @override
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   setSize: function(width, height) {
     this.width = width;
     this.height = height;
     return this;
   },
 
+  /**
+   * @instance
+   * @override
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   setScale: function(x, y) {
     this.scaleX = x;
     if (arguments.length <= 1) {
@@ -201,11 +270,25 @@ export const PixiDisplayElement = phina.createClass({
     return this;
   },
 
+  /**
+   * @instance
+   * @override
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   setRotation: function(angle) {
     this.rotation = angle;
     return this;
   },
 
+  /**
+   * @instance
+   * @override
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   setOrigin: function(x, y) {
     this.originX = x;
     if (arguments.length <= 1) {
@@ -215,23 +298,37 @@ export const PixiDisplayElement = phina.createClass({
     return this;
   },
 
+  /**
+   * @instance
+   * @override
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   setVisible: function(flag) {
     this.visible = flag;
     return this;
   },
 
+  /**
+   * @instance
+   * @memberof phina.pixi.PixiDisplayElement
+   *
+   * @return {this}
+   */
   clearFilter: function() {
     this[PIXI_KEY].filters = [];
     return this;
   },
 
   /**
-   * addFilter
-   * フィルターを個別に追加
-   * clearをtrueでリセット
+   * Set PIXI.Filter to the PIXI element
+   * @instance
+   * @memberof phina.pixi.PixiDisplayElement
+   *
    * @param {PIXI.Filter} filter
-   * @param {boolean} clear
-   * @return this
+   * @param {boolean} clear - clears the filters
+   * @return {this}
    */
   addFilter: function(filter, clear) {
     if (clear) this.clearFilter();
@@ -248,10 +345,12 @@ export const PixiDisplayElement = phina.createClass({
   },
 
   /**
-   * setFilters
-   * フィルターを配列もしくは可変長引数でセット
+   * Set PIXI.filters with array or rest paramenter
+   * @instance
+   * @memberof phina.pixi.PixiDisplayElement
+   *
    * @param {PIXI.Filter[] | ...PIXI.Filter} filters
-   * @return this
+   * @return {this}
    */
   setFilters: function(filters) {
     if (Array.isArray(filters)) {
