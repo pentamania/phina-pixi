@@ -25,7 +25,9 @@ var PixiTexture = phina.createClass({
    * @return {resolve return}
    */
   _load: function(resolve) {
-    PIXI.loader.add(this._key, this.src).load(function(loader, resources) {
+    /* loaderロード中はaddできないため、アセットごとにloader生成する */
+    var loader = new PIXI.loaders.Loader();
+    loader.add(this._key, this.src).load(function(loader, resources) {
       var resrc = resources[this._key];
       if (resrc.texture) {
         this.texture = resrc.texture;
@@ -33,6 +35,7 @@ var PixiTexture = phina.createClass({
         // スプライトマップのとき: 全てテクスチャ登録する？
         this.textures = resrc.textures;
       }
+      loader = null;
       resolve(this);
     }.bind(this));
   },
