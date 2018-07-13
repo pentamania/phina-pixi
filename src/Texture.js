@@ -115,6 +115,12 @@ var PixiTexture = phina.createClass({
   },
 
   _static: {
+    createFrame: function(texture, x, y, width, height) {
+      var pixiTexture = PixiTexture();
+      pixiTexture.texture = texture;
+      return pixiTexture.createFrame(x, y, width, height);
+    },
+
     fromCanvas: function(canvas) {
       return PixiTexture().fromCanvas(canvas);
     },
