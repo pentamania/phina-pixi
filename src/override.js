@@ -1,4 +1,5 @@
 import * as phina from "phina.js";
+import * as PIXI from "pixi.js";
 
 /**
  * pixi側elementがhasを持っていないので存在確認追加
@@ -25,4 +26,19 @@ phina.app.Updater.prototype._updateElement = function(element) {
       this._updateElement(tempChildren[i]);
     }
   }
+}
+
+
+/**
+ * PIXI extend Rectangle.set
+ * @param {number} x
+ * @param {number} y
+ * @param {number} width
+ * @param {number} height
+ */
+PIXI.Rectangle.prototype.set = function(x, y, width, height) {
+  this.x = x;
+  this.y = y;
+  this.width = width;
+  this.height = height;
 }
