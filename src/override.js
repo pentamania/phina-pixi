@@ -28,7 +28,6 @@ phina.app.Updater.prototype._updateElement = function(element) {
   }
 }
 
-
 /**
  * PIXI extend Rectangle.set
  * @param {number} x
@@ -41,4 +40,40 @@ PIXI.Rectangle.prototype.set = function(x, y, width, height) {
   this.y = y;
   this.width = width;
   this.height = height;
+}
+
+/**
+ * FrameAnimation override
+ *
+ */
+phina.accessory.FrameAnimation.prototype._updateFrame = function(element) {
+  var anim = this.currentAnimation;
+  if (anim) {
+    if (this.currentFrameIndex >= anim.frames.length) {
+      if (anim.next) {
+        this.gotoAndPlay(anim.next);
+        return ;
+      }
+      else {
+        this.paused = true;
+        this.finished = true;
+        this.flare('finished'); // add
+        return ;
+      }
+    }
+  }
+
+  var index = anim.frames[this.currentFrameIndex];
+  var frame = this.ss.getFrame(index);
+  // modified
+  if (this.target.srcRect) {
+    this.target.srcRect.set(frame.x, frame.y, frame.width, frame.height);
+  } else {
+    this.target.setFrameIndex(index, frame.width, frame.height)
+  }
+
+  if (this.fit) {
+    this.target.width = frame.width;
+    this.target.height = frame.height;
+  }
 }
