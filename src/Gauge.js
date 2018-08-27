@@ -12,7 +12,6 @@ import {toHex} from "./utils.js";
  * @param  {Object} params
  */
 export default phina.createClass({
-// export default phina.define('phina.pixi.Gauge', {
   superClass: PixiDisplayElement,
 
   _ratio: 1,
@@ -43,8 +42,10 @@ export default phina.createClass({
   },
 
   /**
-   * 割合で値を設定（0.0 ~ 1.0）
-   * @caveat valueと無関係に処理される
+   * setRatio
+   * @param {number} v - clamp to 0.0~1.0
+   * @todo value should be changed
+   * @return {this}
    */
   setRatio: function(v) {
     v = Math.clamp(v, 0, 1);
@@ -56,12 +57,11 @@ export default phina.createClass({
 
   /**
    * setValue
-   * 負の値もok
-   * 超過値もokにする？
+   * @param {number} value - negative acceptable
+   * @return {this}
    */
   setValue: function(value) {
     value = Math.clamp(value, this._minValue, this._maxValue);
-    // value = Math.max(value, this._minValue);
     this._value = value;
     this.ratio = value/this._maxValue;
 
@@ -73,6 +73,7 @@ export default phina.createClass({
    * setColor
    * @param {number|string} color hex
    * @param {number|string} bgColor hex
+   * @return {this}
    */
   setColor: function(color, bgColor) {
     if (color != null) {
@@ -93,23 +94,22 @@ export default phina.createClass({
     return this;
   },
 
+  /**
+   * refill
+   * set to max
+   * @return {this}
+   */
   refill: function() {
     this.value = this.max;
     return this;
   },
 
-  _drawGauge: function() {
-    this[PIXI_KEY].clear()
-    .beginFill(this.bgColor, 1)
-    .drawRect(0, 0, this._maxWidth, this.height)
-    .endFill()
-    .beginFill(this.color, this._gaugeAlpha)
-    .drawRect(0, 0, this._maxWidth*this.ratio, this.height)
-    .endFill()
-    ;
-  },
-
-  // TODO: マスクのサイズの方をリサイズするパターン
+  /**
+   * setMask
+   * TODO: マスクサイズをリサイズする手段
+   * @return {this}
+   */
+  //
   setMask: function() {
     var mask = new PIXI.Graphics();
     mask.beginFill();
@@ -123,6 +123,22 @@ export default phina.createClass({
     return this;
   },
 
+  /**
+   * _drawGauge
+   * @private
+   * @return {void}
+   */
+  _drawGauge: function() {
+    this[PIXI_KEY].clear()
+      .beginFill(this.bgColor, 1)
+      .drawRect(0, 0, this._maxWidth, this.height)
+      .endFill()
+      .beginFill(this.color, this._gaugeAlpha)
+      .drawRect(0, 0, this._maxWidth*this.ratio, this.height)
+      .endFill()
+    ;
+  },
+
   _accessor: {
     /*
      * ratio range[0 ~ 1]
@@ -133,27 +149,32 @@ export default phina.createClass({
         this.setRatio(v);
       }
     },
+
     value: {
       "get": function() { return this._value; },
       "set": function(v) {
         this.setValue(v);
       }
     },
+
     max: {
       "get": function() { return this._maxValue; },
       "set": function(v) {
         this._maxValue = v;
       }
     },
+
     min: {
       "get": function() { return this._minValue; },
       "set": function(v) {
         this._minValue = v;
       }
     },
+
     isMax: {
       "get": function() { return this._value === this._maxValue; }
     },
+
     isNeg: {
       "get": function() { return this._value < 0; }
     }

@@ -2,8 +2,6 @@ import * as phina from "phina.js";
 import * as PIXI from "pixi.js";
 import {PIXI_KEY} from './const.js';
 
-/* globalizeされた時を考え、Pixi...の接頭辞をつける */
-
 /**
  * phina.pixi.PixiElement
  * @class   PixiElement
@@ -28,7 +26,7 @@ export const PixiElement = phina.createClass({
     if (child.parent) parent.removeChild(child);
 
     if (child[PIXI_KEY] === undefined) {
-      /* 純正pixiオブジェクト */
+      /* pure pixi element */
       // console.warn('[phina-pixi.js]: PixiElement child is recommended to extend PixiDisplayElement', child);
       this[PIXI_KEY].addChild(child);
     } else {
@@ -50,7 +48,7 @@ export const PixiElement = phina.createClass({
     if (index !== -1) {
       this.children.splice(index, 1);
       if (child[PIXI_KEY] === undefined) {
-        /* 純正pixiオブジェクト */
+        /* pure pixi element */
         this[PIXI_KEY].removeChild(child);
       } else {
         this[PIXI_KEY].removeChild(child[PIXI_KEY]);
@@ -64,7 +62,6 @@ export const PixiElement = phina.createClass({
 
   /**
    * getPixiChildren
-   * pixi側には利便のため、直接追加したもの以外も含まれる
    * @return {Array}
    */
   getPixiChildren: function() {
@@ -77,7 +74,6 @@ export const PixiElement = phina.createClass({
  * phina.pixi.PixiScene
  * @class   PixiScene
  * @extends PixiElement
- * PixiApp用Scene
  *
  * @param object
 */
@@ -310,6 +306,7 @@ export const PixiDisplayElement = phina.createClass({
         this[PIXI_KEY].width = v;
       }
     },
+
     /**
      * @property    height
      * height

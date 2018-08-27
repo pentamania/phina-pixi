@@ -108,7 +108,6 @@ export default phina.createClass({
 
     // 色指定はhex以外でもOKになった？
     fill: {
-      // get: function() { console.log("get"); return this[PIXI_KEY].style.fill; },
       get: function() { return this[PIXI_KEY].style.fill; },
       set: function(v) {
         // this[PIXI_KEY].style.fill = toHex(v);
@@ -128,6 +127,7 @@ export default phina.createClass({
         this[PIXI_KEY].style.strokeThickness = v;
       },
     },
+
     /**
      * strokeThickness
      * same as strokeWidth

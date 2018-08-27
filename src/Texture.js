@@ -94,23 +94,13 @@ var PixiTexture = phina.createClass({
 
   _accessor: {
     width: {
-      get: function() {
-        return this.texture.width;
-      },
-
-      set: function(v) {
-        this.texture.width = v;
-      }
+      get: function() { return this.texture.width; },
+      set: function(v) { this.texture.width = v; }
     },
 
     height: {
-      get: function() {
-        return this.texture.height;
-      },
-
-      set: function(v) {
-        this.texture.height = v;
-      }
+      get: function() { return this.texture.height; },
+      set: function(v) { this.texture.height = v; }
     },
   },
 
