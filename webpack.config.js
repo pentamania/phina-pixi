@@ -2,6 +2,8 @@ const webpack = require("webpack");
 const path = require('path');
 const pkg = require('./package.json');
 
+const namespace = ["phina", "pixi"];
+
 const banner = `
 ${pkg.name} ${pkg.version}
 ${pkg.license} Licensed
@@ -9,7 +11,7 @@ ${pkg.license} Licensed
 Copyright (C) ${pkg.author}, ${pkg.homepage}
 `;
 
-const srcPath = path.resolve(__dirname, 'entry.js');
+const srcPath = path.resolve(__dirname, 'src/index.js');
 const distPath = path.resolve(__dirname, 'dist');
 
 const isProduction = (process.env.NODE_ENV != null && process.env.NODE_ENV.trim() === "production");
@@ -22,12 +24,8 @@ module.exports = {
   output: {
     path: distPath,
     filename: filename,
-
-    /* webpack v4のエラー？: UMDのときはglobalをthisにしないとwebかbroswerどちらかからしか読み込めない
-      https://github.com/webpack/webpack/issues/6522
-    */
+    library: namespace,
     libraryTarget: 'umd',
-    globalObject: 'this',
   },
   plugins: [
     new webpack.BannerPlugin({
@@ -35,17 +33,12 @@ module.exports = {
     })
   ],
   externals: {
-    // [lib-name]: [var name]
-    // 'phina.js': 'phina',
-    // 'pixi.js': 'PIXI',
-
     'phina.js': {
       commonjs: 'phina.js',
       commonjs2: 'phina.js',
       amd: 'phina.js',
       root: 'phina', // windowでのglobalオブジェクト
     },
-
     'pixi.js': {
       commonjs: 'pixi.js',
       commonjs2: 'pixi.js',
