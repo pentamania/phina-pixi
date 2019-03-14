@@ -11,9 +11,6 @@ Plugin module for phina.js to use pixi.js as rendering engine.
 - [Performance test: phina-pixi](https://pentamania.github.io/phina-pixi/performance-test/pixiLayer.html)
 - [Performance test: phina.js only](https://pentamania.github.io/phina-pixi/performance-test/phinaSprite.html)
 
-### Download
-[https://github.com/pentamania/phina-pixi/releases](https://github.com/pentamania/phina-pixi/releases)
-
 ### Sample code (in browser)
 
 ```html
@@ -76,7 +73,7 @@ phina.main(function() {
 
 ```npm install phina-pixi```
 
-#### Use
+#### Usage
 ```js
 import * as phina from 'phina.js';
 import {PixiLayer, PixiSprite} from 'phina-pixi';
@@ -111,6 +108,12 @@ phina.main(function() {
   app.run();
 });
 ```
+
+### Download
+[https://github.com/pentamania/phina-pixi/releases](https://github.com/pentamania/phina-pixi/releases)
+
+### CDN
+[https://cdn.jsdelivr.net/npm/phina-pixi@latest/dist/phina-pixi.min.js](https://cdn.jsdelivr.net/npm/phina-pixi@latest/dist/phina-pixi.min.js)
 
 #### Supported
 - phina v0.2.x
