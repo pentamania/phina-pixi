@@ -1,7 +1,7 @@
 import * as phina from "phina.js";
 import * as PIXI from "pixi.js";
 import {toHex} from "./utils.js";
-export {PixiScene} from './element.js';
+import {PixiScene} from './element.js';
 var defaultParams = {
   width: 640,
   height: 960,
