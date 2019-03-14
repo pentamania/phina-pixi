@@ -13,6 +13,9 @@
     "build:min": "set NODE_ENV=production && webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist/"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pentamania/phina-pixi.git"
