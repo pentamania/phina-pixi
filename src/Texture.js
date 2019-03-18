@@ -1,6 +1,6 @@
 import * as phina from "phina.js";
 import * as PIXI from "pixi.js";
-var ASSET_TYPE = 'pixi';
+import { ASSET_TYPE } from "./const.js";
 
 /**
  * phina.pixi.PixiTexture
@@ -120,15 +120,5 @@ var PixiTexture = phina.createClass({
     },
   }
 });
-
-/**
- * extend phina AssetLoader
- */
-// phina.asset.AssetLoader.register('pixi', function(key, path) {
-//   return PixiTexture(key).load(path);
-// });
-phina.asset.AssetLoader.assetLoadFunctions[ASSET_TYPE] = function(key, path) {
-  return PixiTexture(key).load(path);
-};
 
 export default PixiTexture;

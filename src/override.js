@@ -1,5 +1,7 @@
 import * as phina from "phina.js";
 import * as PIXI from "pixi.js";
+import { ASSET_TYPE } from "./const.js";
+import PixiTexture from "./Texture.js";
 
 /**
  * pixi側elementがhasを持っていないので存在確認追加
@@ -77,3 +79,11 @@ phina.accessory.FrameAnimation.prototype._updateFrame = function(element) {
     this.target.height = frame.height;
   }
 }
+
+
+/**
+ * extend phina AssetLoader
+ */
+phina.asset.AssetLoader.assetLoadFunctions[ASSET_TYPE] = function(key, path) {
+  return PixiTexture(key).load(path);
+};
