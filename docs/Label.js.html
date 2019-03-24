@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Label.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+
+    <!-- add my custom style -->
+    <style type="text/css">
+        h4.name {
+            background: #efbbdd;
+            border-radius: 0.2rem;
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Label.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as phina from "phina.js";
+import * as PIXI from "pixi.js";
+import {PIXI_KEY} from './const.js';
+import {PixiDisplayElement} from './element.js';
+import {toHex} from "./utils.js";
+
+var defaultParams = {
+  fontFamily: 'meirio, monospace, sans-serif',
+  fill: "black",
+  stroke: null,
+  strokeWidth: 2,
+  text: 'Hello world!',
+  fontSize: 32,
+  fontWeight: '',
+  align: 'center',
+  baseline: 'alphabetic',
+  lineHeight: 1.2,
+};
+
+/**
+ * &lt;pre>
+ * テキスト描画クラス
+ * Text rendering wrapper class.
+ * Another name: &lt;strong>phina.pixi.PixiText&lt;/strong>
+ * &lt;/pre>
+ *
+ * @todo  Add all properties
+ * @class   phina.pixi.PixiLabel
+ * @memberOf phina.pixi
+ * @extends PixiDisplayElement
+ *
+ * @param  {Object} params
+ *
+ * @property {object} style - &lt;Readonly> Style of pixi.object
+ * @property {string} text - text content
+ * @property {string} font - &lt;Readonly> Font Property of pixi.object
+ * @property {string} fontFamily
+ * @property {number} fontSize
+ * @property {number} fontWeight
+ *
+ */
+export default phina.createClass({
+  superClass: PixiDisplayElement,
+
+  init: function(options) {
+    if (typeof arguments[0] !== 'object') {
+      options = { text: arguments[0] };
+    } else {
+      options = arguments[0];
+    }
+    options = ({}).$safe(options, defaultParams);
+    this.superInit(new PIXI.Text(options.text, new PIXI.TextStyle(options)));
+
+    /**
+     * @todo:accessor設定予定
+     * 超絶重くなるのでenterframeで同期させない
+     */
+    // this[PIXI_KEY].style = {
+      // align: this.align,
+      // breakWords: false,
+      // dropShadow: false,
+      // dropShadowAngle: Math.PI / 6,
+      // dropShadowBlur: 0,
+      // dropShadowColor: '#000000',
+      // dropShadowDistance: 5,
+      // fillGradientType: CONST.TEXT_GRADIENT.LINEAR_VERTICAL,
+      // fontStyle: this.fontStyle || 'normal',
+      // fontVariant: 'normal',
+      // letterSpacing: this.letterSpacing || 0,
+      // lineHeight: this.lineHeight, //設定すると消える...
+      // lineJoin: this.lineJoin || 'miter',
+      // miterLimit: this.miterLimit,
+      // padding: 0,
+      // strokeThickness: this.strokeWidth,
+      // textBaseline: this.baseline,
+      // wordWrap: false,
+      // wordWrapWidth: 100
+    // };
+  },
+
+  _accessor: {
+    style: {
+      get: function() { return this[PIXI_KEY].style; },
+    },
+    text: {
+      get: function() { return this._text; },
+      set: function(v) {
+        this._text = v;
+        this[PIXI_KEY].text = v;
+        this._lines = (this.text + '').split('\n');
+      },
+    },
+    font: {
+      get: function() {
+        return "{fontWeight} {fontSize}px {fontFamily}".format(this);
+      },
+    },
+    fontFamily: {
+      get: function() { return this[PIXI_KEY].style.fontFamily; },
+      set: function(v) {
+        this[PIXI_KEY].style.fontFamily = v;
+      },
+    },
+    fontSize: {
+      get: function() { return this[PIXI_KEY].style.fontSize; },
+      set: function(v) {
+        this[PIXI_KEY].style.fontSize = v;
+      },
+    },
+    fontWeight: {
+      get: function() { return this[PIXI_KEY].style.fontWeight; },
+      set: function(v) {
+        this[PIXI_KEY].style.fontWeight = v;
+      },
+    },
+
+    // 色指定はhex以外でもOKになった？
+    fill: {
+      get: function() { return this[PIXI_KEY].style.fill; },
+      set: function(v) {
+        // this[PIXI_KEY].style.fill = toHex(v);
+        this[PIXI_KEY].style.fill = v;
+      },
+    },
+    stroke: {
+      get: function() { return this[PIXI_KEY].style.stroke; },
+      set: function(v) {
+        this[PIXI_KEY].style.stroke = v;
+      },
+    },
+
+    strokeWidth: {
+      get: function() { return this[PIXI_KEY].style.strokeThickness; },
+      set: function(v) {
+        this[PIXI_KEY].style.strokeThickness = v;
+      },
+    },
+
+    /**
+     * strokeThickness
+     * same as strokeWidth
+     */
+    strokeThickness: {
+      get: function() { return this[PIXI_KEY].style.strokeThickness; },
+      set: function(v) {
+        this[PIXI_KEY].style.strokeThickness = v;
+      },
+    },
+
+    /* …その他todo.. */
+
+  },
+
+  _static: {
+    defaults: defaultParams,
+  },
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="phina.pixi.PixiApp.html">PixiApp</a></li><li><a href="phina.pixi.PixiDisplayElement.html">PixiDisplayElement</a></li><li><a href="phina.pixi.PixiElement.html">PixiElement</a></li><li><a href="phina.pixi.PixiGauge.html">PixiGauge</a></li><li><a href="phina.pixi.PixiLabel.html">PixiLabel</a></li><li><a href="phina.pixi.PixiLayer.html">PixiLayer</a></li><li><a href="phina.pixi.PixiScene.html">PixiScene</a></li><li><a href="phina.pixi.PixiSprite.html">PixiSprite</a></li><li><a href="phina.pixi.PixiTexture.html">PixiTexture</a></li></ul><h3>Namespaces</h3><ul><li><a href="phina.html">phina</a></li><li><a href="phina.pixi.html">pixi</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Mar 25 2019 00:05:00 GMT+0900 (東京 (標準時))
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

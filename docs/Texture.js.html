@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Texture.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+
+    <!-- add my custom style -->
+    <style type="text/css">
+        h4.name {
+            background: #efbbdd;
+            border-radius: 0.2rem;
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Texture.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as phina from "phina.js";
+import * as PIXI from "pixi.js";
+import { ASSET_TYPE } from "./const.js";
+
+/**
+ * &lt;pre>
+ * pixi用textureアセットクラス
+ * phina Asset class wrapping.PIXI.Texture
+ * &lt;/pre>
+ *
+ * @class   phina.pixi.PixiTexture
+ * @memberOf phina.pixi
+ * @extends phina.asset.Asset
+ *
+ * @param  {string} key - Name of the key to get this object from AssetManager
+ *
+ * properties: todo
+ * @property {number} width
+ * @property {number} height
+ */
+var PixiTexture = phina.createClass({
+  superClass: phina.asset.Asset,
+
+  init: function(key) {
+    this.superInit();
+    this._key = key || null;
+    this.texture = null;
+  },
+
+  /**
+   * _load returns resolve result
+   * @private
+   * @instance
+   * @memberof phina.pixi.PixiTexture
+   * @param  {function} resolve
+   * @return {void}
+   */
+  _load: function(resolve) {
+    /* loaderロード中はaddできないため、アセットごとにloader生成する */
+    var loader = new PIXI.loaders.Loader();
+    loader.add(this._key, this.src).load(function(loader, resources) {
+      var resrc = resources[this._key];
+      if (resrc.texture) {
+        this.texture = resrc.texture;
+      } else if (resrc.textures) {
+        /* スプライトマップのときは全てのテクスチャを登録 */
+        resrc.textures.forIn(function(key, texture) {
+          var pixiTexture = PixiTexture();
+          pixiTexture.texture = texture;
+          key = key.replace(/\.[^/.]+$/, ""); // trim .ext
+          phina.asset.AssetManager.set(ASSET_TYPE, key, pixiTexture);
+        })
+      }
+      loader = null;
+      resolve(this);
+    }.bind(this));
+  },
+
+  /**
+   * &lt;pre>
+   * create and return new PIXI.texture
+   * You can set frame by passing parameters
+   * 新しいPIXI.textureを返す
+   * 矩形パラメータを渡すことでフレーム指定も可能
+   * &lt;/pre>
+   * @instance
+   * @memberof phina.pixi.PixiTexture
+   *
+   * @param  {number|object} [x] - Could be a param object
+   * @param  {number} [y] - frame rect origin y
+   * @param  {number} [width] - frame rect width
+   * @param  {number} [height]- frame rect height
+   * @return {PIXI.Texture}
+   */
+  createFrame: function(x, y, width, height) {
+    if (typeof x === 'object') {
+      y = x.y;
+      width = x.width;
+      height = x.height;
+      x = x.x;
+    }
+    x = x || 0;
+    y = y || 0;
+    width = width || this.texture.baseTexture.width;
+    height = height || this.texture.baseTexture.height;
+
+    var newPixiTexture = PixiTexture();
+    newPixiTexture.texture = new PIXI.Texture(this.texture.baseTexture, new PIXI.Rectangle(x, y, width, height));
+    return newPixiTexture;
+  },
+
+  /**
+   * Create new Pixi texture from HTMLcanvas
+   * @instance
+   * @memberof phina.pixi.PixiTexture
+   * @param {HTMLCanvasElement} canvas
+   * @return {this}
+   */
+  fromCanvas: function(canvas) {
+    this.texture = PIXI.Texture.fromCanvas(canvas);
+    return this;
+  },
+
+  /**
+   * Create new Pixi texture from phina Shape class
+   * @instance
+   * @memberof phina.pixi.PixiTexture
+   * @param {phina.display.Shape} shape
+   * @return {this}
+   */
+  fromShape: function(shape) {
+    if (shape._dirtyDraw) {
+      shape.render(shape.canvas);
+    }
+    return this.fromCanvas(shape.canvas.domElement);
+  },
+
+  /**
+   * Update texture
+   * @instance
+   * @memberof phina.pixi.PixiTexture
+   * @return {this}
+   */
+  update: function() {
+    this.texture.update();
+    return this;
+  },
+
+  _accessor: {
+    width: {
+      get: function() { return this.texture.width; },
+      set: function(v) { this.texture.width = v; }
+    },
+
+    height: {
+      get: function() { return this.texture.height; },
+      set: function(v) { this.texture.height = v; }
+    },
+  },
+
+  _static: {
+
+    /**
+     * static version of [createFrame]{@link phina.pixi.PixiTexture#createFrame}
+     * @static
+     * @memberof phina.pixi.PixiTexture
+     * @return {PIXI.Texture}
+     */
+    createFrame: function(texture, x, y, width, height) {
+      var pixiTexture = PixiTexture();
+      pixiTexture.texture = texture;
+      return pixiTexture.createFrame(x, y, width, height);
+    },
+
+    /**
+     * static version of [fromCanvas]{@link phina.pixi.PixiTexture#fromCanvas}
+     * @static
+     * @memberof phina.pixi.PixiTexture
+     * @return {PixiTexture}
+     */
+    fromCanvas: function(canvas) {
+      return PixiTexture().fromCanvas(canvas);
+    },
+
+    /**
+     * static version of [fromShape]{@link phina.pixi.PixiTexture#fromShape}
+     * @static
+     * @memberof phina.pixi.PixiTexture
+     * @return {PixiTexture}
+     */
+    fromShape: function(shape) {
+      return PixiTexture().fromShape(shape);
+    },
+  }
+});
+
+export default PixiTexture;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="phina.pixi.PixiApp.html">PixiApp</a></li><li><a href="phina.pixi.PixiDisplayElement.html">PixiDisplayElement</a></li><li><a href="phina.pixi.PixiElement.html">PixiElement</a></li><li><a href="phina.pixi.PixiGauge.html">PixiGauge</a></li><li><a href="phina.pixi.PixiLabel.html">PixiLabel</a></li><li><a href="phina.pixi.PixiLayer.html">PixiLayer</a></li><li><a href="phina.pixi.PixiScene.html">PixiScene</a></li><li><a href="phina.pixi.PixiSprite.html">PixiSprite</a></li><li><a href="phina.pixi.PixiTexture.html">PixiTexture</a></li></ul><h3>Namespaces</h3><ul><li><a href="phina.html">phina</a></li><li><a href="phina.pixi.html">pixi</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Mar 25 2019 00:05:00 GMT+0900 (東京 (標準時))
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
