@@ -7,11 +7,13 @@ phina-pixi
 を使用するためのプラグインモジュール  
 Plugin module for phina.js to use pixi.js as rendering engine.
 
-### Example 
+## Example 
 - [Performance test: phina-pixi](https://pentamania.github.io/phina-pixi/performance-test/pixiLayer.html)
 - [Performance test: phina.js only](https://pentamania.github.io/phina-pixi/performance-test/phinaSprite.html)
 
-### Sample code (in browser)
+## Sample 
+
+### In browser
 
 ```html
 <!DOCTYPE html>
@@ -30,8 +32,6 @@ Plugin module for phina.js to use pixi.js as rendering engine.
 <script src='./path/to/phina-pixi.js'></script>
 
 <script>
-phina.globalize();
-
 phina.define('MainScene', {
   superClass: 'DisplayScene',
 
@@ -67,11 +67,13 @@ phina.main(function() {
 </html>
 ```
 
-### Sample code (as module)
+### As module
+
 #### Install
 ```npm install pixi.js phina.js```
 
 ```npm install phina-pixi```
+
 
 #### Usage
 ```js
@@ -109,21 +111,24 @@ phina.main(function() {
 });
 ```
 
+### CDN
+[https://cdn.jsdelivr.net/npm/phina-pixi@latest/dist/phina-pixi.min.js](https://cdn.jsdelivr.net/npm/phina-pixi@latest/dist/phina-pixi.min.js)
+
+### Documentation
+[https://pentamania.github.io/phina-pixi/docs](https://pentamania.github.io/phina-pixi/docs)
+
 ### Download
 [https://github.com/pentamania/phina-pixi/releases](https://github.com/pentamania/phina-pixi/releases)
 
-### CDN
-[https://cdn.jsdelivr.net/npm/phina-pixi@latest/dist/phina-pixi.min.js](https://cdn.jsdelivr.net/npm/phina-pixi@latest/dist/phina-pixi.min.js)
+### License
+MIT
 
 #### Supported
 - phina v0.2.x
 - pixi v4.x.x
 
-## License
-MIT
-
-## Donation
+### Donation
 [☺Amazon wish list☺](http://amzn.asia/1NJ5hOd)
 
-## Inspired by
+### Inspired by
 [phina.pixi.js](https://github.com/simiraaaa/phina.pixi.js)
