@@ -29,33 +29,38 @@ Plugin module for phina.js to use pixi.js as rendering engine.
 <!-- load libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
 <script src='https://cdn.jsdelivr.net/npm/phina.js@0.2.2/build/phina.min.js'></script>
-<script src='./path/to/phina-pixi.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/phina-pixi@latest/dist/phina-pixi.min.js'></script>
 
 <script>
+
+// phina.globalize();
+
 phina.define('MainScene', {
-  superClass: 'DisplayScene',
+  superClass: 'phina.display.DisplayScene',
 
   init: function(options) {
     this.superInit(options);
 
     // Layer
-    this.pixiLayer = phina.pixi.PixiLayer(options).addChildTo(this);
-    // this.pixiLayer = PixiLayer(options).addChildTo(this); // when phina.globalized
-
+    this.pixiLayer = phina.pixi.PixiLayer(options)
+    // this.pixiLayer = PixiLayer(options) // when phina.globalize()
+    .addChildTo(this)
+    
     // Sprite
-    phina.pixi.PixiSprite('player')
-    // PixiSprite('player') // when phina.globalized
+    phina.pixi.PixiSprite("logo")
+    // PixiSprite('logo') // when phina.globalize()
+    .setPosition(this.width*0.5, this.height*0.5)
     .addChildTo(this.pixiLayer);
   },
 });
 
 phina.main(function() {
-  var app = GameApp({
+  var app = phina.game.GameApp({
     startLabel: 'main',
     assets: {
       // Use dedicated loader
       pixi: {
-        player: "./assets/player.png"
+        logo: 'https://cdn.jsdelivr.net/npm/phina.js@0.2.2/logo.png',
       }
     }
   });
@@ -80,29 +85,30 @@ phina.main(function() {
 import * as phina from 'phina.js';
 import {PixiLayer, PixiSprite} from 'phina-pixi';
 
-phina.globalize();
-
 phina.define('MainScene', {
-  superClass: 'DisplayScene',
+  superClass: 'phina.display.DisplayScene',
 
   init: function(options) {
     this.superInit(options);
 
     // Layer
-    this.pixiLayer = PixiLayer(options).addChildTo(this);
-
+    this.pixiLayer = PixiLayer(options)
+    .addChildTo(this)
+    
     // Sprite
-    PixiSprite('player')
+    PixiSprite("logo")
+    .setPosition(this.width*0.5, this.height*0.5)
     .addChildTo(this.pixiLayer);
   },
 });
 
 phina.main(function() {
-  var app = GameApp({
+  var app = phina.game.GameApp({
     startLabel: 'main',
     assets: {
+      // Use dedicated loader
       pixi: {
-        player: "./assets/player.png"
+        logo: 'https://cdn.jsdelivr.net/npm/phina.js@0.2.2/logo.png',
       }
     }
   });
